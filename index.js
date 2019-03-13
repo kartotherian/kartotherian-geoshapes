@@ -5,7 +5,7 @@ const fs = require('fs');
 const info = require('./package.json');
 const BBPromise = require('bluebird');
 const Err = require('@kartotherian/err');
-const postgres = require('pg-promise')({promiseLib: BBPromise});
+const postgres = require('pg-promise')({ promiseLib: BBPromise });
 const GeoShapes = require('./lib/geoshapes');
 
 /**
@@ -57,7 +57,7 @@ function loadServiceConfig(core) {
 
 function loadDBHandler(config) {
     return BBPromise.try(() => {
-        
+
         if (!config.database || !/^[a-zA-Z][a-zA-Z0-9]*$/.test(config.database)) {
             throw new Err('"geoshapes" parameters must specify "database"');
         }
@@ -77,8 +77,8 @@ function loadDBHandler(config) {
 function checkValidStructure(config) {
     // Check the valid structure of the table - use invalid id
     return BBPromise.all([
-        new GeoShapes('geoshape', {ids: 'Q123456789'}, config).execute(),
-        new GeoShapes('geoline', {ids: 'Q123456789'}, config).execute()
+        new GeoShapes('geoshape', { ids: 'Q123456789' }, config).execute(),
+        new GeoShapes('geoline', { ids: 'Q123456789' }, config).execute()
     ]).then(() => {
         return config;
     });
@@ -87,7 +87,7 @@ function checkValidStructure(config) {
 function initService(config) {
 
     return BBPromise.try(() => {
-        
+
         let userAgent = info.name + '/' + info.version + ' (https://mediawiki.org/Maps)';
 
         if (!config) {
@@ -99,12 +99,12 @@ function initService(config) {
 
         config.sparqlHeaders = {
             'User-Agent': userAgent,
-            'Accept': 'application/sparql-results+json',
+            Accept: 'application/sparql-results+json',
         };
 
         config.mwapiHeaders = {
             'User-Agent': userAgent,
-            'Host': 'en.wikipedia.org'
+            Host: 'en.wikipedia.org'
         };
 
         config.maxidcount = config.maxidcount !== undefined ? parseInt(config.maxidcount) : 500;
@@ -118,8 +118,9 @@ function initService(config) {
         if (config.allowUserQueries) {
             config.queries.default = defaultQ;
         } else {
-            // Delete all queries except the default one, and remove parameter names to prevent user parameters
-            config.queries = {default: defaultQ};
+            // Delete all queries except the default one, and remove parameter
+            // names to prevent user parameters
+            config.queries = { default: defaultQ };
             if (defaultQ.params) {
                 defaultQ.params.forEach(param => {
                     delete param.name;
@@ -128,8 +129,8 @@ function initService(config) {
         }
 
         return config;
-    })
-};
+    });
+}
 
 module.exports = (core, router) => {
 
@@ -146,4 +147,4 @@ module.exports = (core, router) => {
         core.log('error', 'geoshapes support failed to load, skipping: ' + err + '\n' + err.stack);
         // still allow loading
     });
-}
+};

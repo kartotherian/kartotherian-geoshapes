@@ -4,14 +4,23 @@
   "description": "Kartotherian service to generate geometric shapes from PostgreSQL data",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "PREQ_CONNECT_TIMEOUT=15 mocha 'test/*.js' && npm run lint",
+    "lint": "eslint --cache --max-warnings 0 .",
+    "lint:fix": "eslint --fix .",
+    "coverage": "nyc --reporter=lcov _mocha"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "repository": "kartotherian/geoshapes",
   "keywords": [
     "kartotherian",
     "postgres"
   ],
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
+  "contributors": [
+    "Mateus Santos <msantos@wikimedia.org>"
+  ],
   "license": "Apache-2.0",
   "bugs": "https://github.com/kartotherian/geoshapes/issues",
   "publishConfig": {
@@ -26,5 +35,15 @@
     "preq": "^0.5.2",
     "topojson": "^2.2.0",
     "wd-type-parser": "^0.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^5.15.1",
+    "eslint-config-node-services": "^2.2.5",
+    "eslint-config-wikimedia": "^0.11.0",
+    "mocha": "^6.0.2",
+    "mocha-eslint": "^5.0.0",
+    "mocha-lcov-reporter": "^1.3.0",
+    "nyc": "^13.3.0",
+    "pre-commit": "^1.2.2"
   }
 }
